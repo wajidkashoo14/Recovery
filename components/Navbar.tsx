@@ -21,253 +21,279 @@ import {
 } from '@/components/ui/navigation-menu'
 import { cn } from '@/lib/utils'
 
+/* ---------------- DATA ---------------- */
+
+const recoveryServices = [
+  { label: 'Bitcoin Recovery', href: '/bitcoin-recovery' },
+  { label: 'Ethereum Recovery', href: '/ethereum-recovery' },
+  { label: 'Trust Wallet', href: '/trust-wallet' },
+  { label: 'MetaMask', href: '/metamask' },
+  { label: 'Ledger', href: '/ledger' },
+]
+
+const otherRecoveryOptions = [
+  { label: 'Lost Password', href: '/lost-password', desc: 'Access locked wallets' },
+  { label: 'Seed Phrase', href: '/seed-phrase', desc: 'Restore from phrase' },
+  { label: 'Hacked Wallet', href: '/hacked-wallet', desc: 'Secure stolen funds' },
+  { label: 'Scam Recovery', href: '/scam-recovery', desc: 'Recover scammed crypto' },
+  { label: 'Wrong Transfer', href: '/wrong-transfer', desc: 'Retrieve mistaken sends' },
+  { label: 'DeFi Recovery', href: '/defi-recovery', desc: 'Smart contract recovery' },
+  { label: 'NFT Recovery', href: '/nft-recovery', desc: 'Recover lost NFTs' },
+  { label: 'Exchange Issues', href: '/exchange-issues', desc: 'Exchange problems' },
+  { label: 'Urgent Recovery', href: '/urgent-recovery', desc: '24/7 emergency help' },
+]
+
+/* ---------------- COMPONENT ---------------- */
+
 export default function Navbar() {
-  const [recoveryServicesOpen, setRecoveryServicesOpen] = React.useState(false)
+  const [openNested, setOpenNested] = React.useState(false)
 
   return (
     <header className="
       sticky top-0 z-50 w-full
-      border-b border-white/10
       bg-gradient-to-b from-black via-zinc-900 to-black
-      backdrop-blur supports-[backdrop-filter]:bg-black/80
+      border-b border-white/10
     ">
-      <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
 
         {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <span className="text-xl font-bold text-white tracking-wide drop-shadow-[0_0_10px_rgba(255,255,255,0.15)]">
-            WalletRecover
-          </span>
+        <Link href="/" className="text-xl font-bold text-white tracking-wide">
+          WalletRecover
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* ---------------- DESKTOP NAV ---------------- */}
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList className="gap-1">
 
-            {/* Home */}
-            <NavigationMenuItem>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    'bg-transparent text-white hover:bg-gradient-to-r hover:from-zinc-800 hover:to-zinc-700'
-                  )}
-                >
-                  Home
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
+            <NavLink href="/">Home</NavLink>
 
             {/* Resources */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger
-                className="bg-transparent text-white hover:bg-gradient-to-r hover:from-zinc-800 hover:to-zinc-700"
-              >
+              <NavigationMenuTrigger className={triggerStyle}>
                 Resources
               </NavigationMenuTrigger>
-              <NavigationMenuContent className="
-                bg-gradient-to-br from-zinc-900 via-black to-zinc-900
-                border border-white/10 rounded-xl shadow-2xl
-              ">
+              <NavigationMenuContent className={dropdownStyle}>
                 <ul className="grid w-[400px] gap-3 p-4">
-                  <ListItem href="/guides" title="Guides">
-                    Step-by-step wallet recovery guides
-                  </ListItem>
-                  <ListItem href="/docs" title="Documentation">
-                    Complete technical documentation
-                  </ListItem>
-                  <ListItem href="/case-studies" title="Case Studies">
-                    Real recovery success stories
-                  </ListItem>
-                  <ListItem href="/faqs" title="FAQs">
-                    Frequently asked questions
-                  </ListItem>
-                  <ListItem href="/security" title="Security Tips">
-                    Best practices for wallet security
-                  </ListItem>
+                  <ListItem href="/guides" title="Guides">Step-by-step guides</ListItem>
+                  <ListItem href="/docs" title="Documentation">Technical docs</ListItem>
+                  <ListItem href="/case-studies" title="Case Studies">Real stories</ListItem>
+                  <ListItem href="/faqs" title="FAQs">Common questions</ListItem>
+                  <ListItem href="/security" title="Security">Best practices</ListItem>
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
 
             {/* Wallet Recovery */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger
-                className="bg-transparent text-white hover:bg-gradient-to-r hover:from-zinc-800 hover:to-zinc-700"
-              >
+              <NavigationMenuTrigger className={triggerStyle}>
                 Wallet Recovery
               </NavigationMenuTrigger>
-              <NavigationMenuContent className="
-                bg-gradient-to-br from-zinc-900 via-black to-zinc-900
-                border border-white/10 rounded-xl shadow-2xl
-              ">
-                <ul className="grid w-[600px] gap-3 p-4 md:grid-cols-2">
+              <NavigationMenuContent className={dropdownStyle}>
+                <ul className="grid w-[600px] grid-cols-2 gap-3 p-4">
 
-                  {/* Nested Recovery Services */}
+                  {/* Nested menu */}
                   <li
                     className="relative"
-                    onMouseEnter={() => setRecoveryServicesOpen(true)}
-                    onMouseLeave={() => setRecoveryServicesOpen(false)}
+                    onMouseEnter={() => setOpenNested(true)}
+                    onMouseLeave={() => setOpenNested(false)}
                   >
-                    <div className="
-                      flex items-center justify-between rounded-lg p-3
-                      cursor-pointer transition-all
-                      text-white/80 hover:text-white
-                      hover:bg-gradient-to-r hover:from-zinc-800 hover:to-zinc-700
-                    ">
+                    <div className={nestedTriggerStyle}>
                       <div>
-                        <div className="text-sm font-medium">
-                          Recovery Services
-                        </div>
-                        <p className="text-sm text-white/50">
-                          Specialized wallet recovery
-                        </p>
+                        <p className="font-medium">Recovery Services</p>
+                        <p className="text-sm text-white/50">Wallet specific help</p>
                       </div>
                       <ChevronRight className="h-4 w-4" />
                     </div>
 
-                    {recoveryServicesOpen && (
-                      <div className="
-                        absolute left-full top-0 ml-2 w-56 p-2
-                        bg-gradient-to-br from-black via-zinc-900 to-black
-                        border border-white/10 rounded-xl shadow-2xl z-50
-                      ">
-                        {[
-                          'Bitcoin Recovery',
-                          'Ethereum Recovery',
-                          'Trust Wallet',
-                          'MetaMask',
-                          'Ledger',
-                        ].map((item) => (
+                    {openNested && (
+                      <div className={nestedMenuStyle}>
+                        {recoveryServices.map(item => (
                           <Link
-                            key={item}
-                            href="/"
-                            className="
-                              block px-3 py-2 text-sm rounded-md
-                              text-white/80 hover:text-white
-                              hover:bg-gradient-to-r hover:from-zinc-800 hover:to-zinc-700
-                              transition-all
-                            "
+                            key={item.label}
+                            href={item.href}
+                            className={nestedItemStyle}
                           >
-                            {item}
+                            {item.label}
                           </Link>
                         ))}
                       </div>
                     )}
                   </li>
 
-                  <ListItem href="/lost-password" title="Lost Password">
-                    Recover locked wallets
-                  </ListItem>
-                  <ListItem href="/seed-phrase" title="Seed Phrase Help">
-                    Restore wallets securely
-                  </ListItem>
-                  <ListItem href="/hacked-wallet" title="Hacked Wallet">
-                    Secure compromised wallets
-                  </ListItem>
-                  <ListItem href="/scam-recovery" title="Scam Recovery">
-                    Recover scammed funds
-                  </ListItem>
-                  <ListItem href="/urgent-recovery" title="Urgent Recovery">
-                    24/7 emergency assistance
-                  </ListItem>
+                  {otherRecoveryOptions.map(item => (
+                    <ListItem key={item.label} href={item.href} title={item.label}>
+                      {item.desc}
+                    </ListItem>
+                  ))}
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
 
-            {/* Pricing */}
-            <NavigationMenuItem>
-              <Link href="/pricing" legacyBehavior passHref>
-                <NavigationMenuLink
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    'bg-transparent text-white hover:bg-gradient-to-r hover:from-zinc-800 hover:to-zinc-700'
-                  )}
-                >
-                  Pricing
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-
-            {/* Blog */}
-            <NavigationMenuItem>
-              <Link href="/blog" legacyBehavior passHref>
-                <NavigationMenuLink
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    'bg-transparent text-white hover:bg-gradient-to-r hover:from-zinc-800 hover:to-zinc-700'
-                  )}
-                >
-                  Blog
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
+            <NavLink href="/pricing">Pricing</NavLink>
+            <NavLink href="/blog">Blog</NavLink>
 
           </NavigationMenuList>
         </NavigationMenu>
 
         {/* CTA */}
-        <Button
-          size="lg"
-          className="hidden md:inline-flex bg-white text-black font-semibold hover:bg-zinc-200"
-        >
+        <Button className="hidden md:inline-flex bg-white text-black hover:bg-zinc-200">
           Recover Your Wallet
         </Button>
 
-        {/* Mobile Menu */}
+        {/* ---------------- MOBILE NAV ---------------- */}
         <Sheet>
-          <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon">
-              <Menu className="h-6 w-6 text-white" />
+          <SheetTrigger asChild>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="md:hidden text-white hover:bg-zinc-800"
+            >
+              <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
+
           <SheetContent
             side="right"
             className="
-              w-80 bg-gradient-to-b from-black via-zinc-900 to-black
-              text-white border-l border-white/10
+              bg-gradient-to-b from-black via-zinc-900 to-black
+              text-white border-l border-white/10 p-4 w-80 overflow-y-auto
             "
           >
             <nav className="mt-8 flex flex-col gap-4">
-              <Link href="/" className="text-lg font-semibold text-white/80 hover:text-white">
-                Home
-              </Link>
-              <Link href="/pricing" className="text-lg font-semibold text-white/80 hover:text-white">
-                Pricing
-              </Link>
-              <Link href="/blog" className="text-lg font-semibold text-white/80 hover:text-white">
-                Blog
-              </Link>
-              <Button className="mt-4 bg-white text-black hover:bg-zinc-200">
+
+              <MobileLink href="/">Home</MobileLink>
+
+              {/* Resources */}
+              <details className="group">
+                <summary className={mobileSummary}>
+                  Resources 
+                  <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
+                </summary>
+                <MobileGroup>
+                  <MobileLink href="/guides">Guides</MobileLink>
+                  <MobileLink href="/docs">Documentation</MobileLink>
+                  <MobileLink href="/case-studies">Case Studies</MobileLink>
+                  <MobileLink href="/faqs">FAQs</MobileLink>
+                  <MobileLink href="/security">Security Tips</MobileLink>
+                </MobileGroup>
+              </details>
+
+              {/* Wallet Recovery */}
+              <details className="group">
+                <summary className={mobileSummary}>
+                  Wallet Recovery 
+                  <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
+                </summary>
+                <MobileGroup>
+                  
+                  {/* Nested Recovery Services */}
+                  <details className="group/nested">
+                    <summary className={mobileNestedSummary}>
+                      Recovery Services
+                      <ChevronDown className="h-3 w-3 transition-transform group-open/nested:rotate-180" />
+                    </summary>
+                    <div className="ml-4 mt-2 flex flex-col gap-2 border-l border-white/10 pl-4">
+                      {recoveryServices.map(item => (
+                        <MobileLink key={item.label} href={item.href}>
+                          {item.label}
+                        </MobileLink>
+                      ))}
+                    </div>
+                  </details>
+
+                  {otherRecoveryOptions.map(item => (
+                    <MobileLink key={item.label} href={item.href}>
+                      {item.label}
+                    </MobileLink>
+                  ))}
+                </MobileGroup>
+              </details>
+
+              <MobileLink href="/pricing">Pricing</MobileLink>
+              <MobileLink href="/blog">Blog</MobileLink>
+
+              <Button className="mt-4 w-full bg-white text-black hover:bg-zinc-200">
                 Recover Your Wallet
               </Button>
+
             </nav>
           </SheetContent>
         </Sheet>
-
       </div>
     </header>
   )
 }
 
-/* Helper Component */
+/* ---------------- STYLES ---------------- */
+
+const triggerStyle =
+  'bg-transparent text-white hover:bg-gradient-to-r hover:from-zinc-800 hover:to-zinc-700'
+
+const dropdownStyle =
+  'bg-gradient-to-br from-zinc-900 via-black to-zinc-900 border border-white/10 rounded-xl shadow-2xl'
+
+const nestedTriggerStyle =
+  'flex items-center justify-between rounded-lg p-3 cursor-pointer text-white/80 hover:text-white hover:bg-gradient-to-r hover:from-zinc-800 hover:to-zinc-700'
+
+const nestedMenuStyle =
+  'absolute left-full top-0 ml-2 w-56 rounded-xl border border-white/10 bg-gradient-to-br from-black via-zinc-900 to-black shadow-2xl p-2 z-50'
+
+const nestedItemStyle =
+  'block rounded-md px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-gradient-to-r hover:from-zinc-800 hover:to-zinc-700'
+
+const mobileSummary =
+  'flex cursor-pointer items-center justify-between text-lg font-semibold text-white/80 hover:text-white list-none'
+
+const mobileNestedSummary =
+  'flex cursor-pointer items-center justify-between text-sm font-medium text-white/70 hover:text-white list-none'
+
+/* ---------------- HELPERS ---------------- */
+
+function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <NavigationMenuItem>
+      <Link href={href} legacyBehavior passHref>
+        <NavigationMenuLink
+          className={cn(navigationMenuTriggerStyle(), triggerStyle)}
+        >
+          {children}
+        </NavigationMenuLink>
+      </Link>
+    </NavigationMenuItem>
+  )
+}
+
+function MobileLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link href={href} className="text-sm text-white/80 hover:text-white transition-colors">
+      {children}
+    </Link>
+  )
+}
+
+function MobileGroup({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="ml-4 mt-3 flex flex-col gap-3 border-l border-white/10 pl-4">
+      {children}
+    </div>
+  )
+}
+
 const ListItem = React.forwardRef<
   React.ElementRef<'a'>,
   React.ComponentPropsWithoutRef<'a'> & { title: string; href: string }
->(({ title, children, href, className, ...props }, ref) => (
+>(({ title, children, href }, ref) => (
   <li>
     <NavigationMenuLink asChild>
       <Link
         ref={ref}
         href={href}
-        className={cn(
-          `
-          block rounded-lg p-3 transition-all
+        className="
+          block rounded-lg p-3
           text-white/80 hover:text-white
           hover:bg-gradient-to-r hover:from-zinc-800 hover:to-zinc-700
-          `,
-          className
-        )}
-        {...props}
+          transition-colors
+        "
       >
         <div className="text-sm font-medium">{title}</div>
         <p className="text-sm text-white/50">{children}</p>
