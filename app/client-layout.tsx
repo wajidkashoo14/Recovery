@@ -1,5 +1,6 @@
 "use client";
 
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
 export default function ClientLayout({
@@ -11,6 +12,7 @@ export default function ClientLayout({
     <div>
       <Navbar />
       {children}
+      <Footer />
     </div>
   );
 }

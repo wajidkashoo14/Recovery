@@ -77,7 +77,7 @@ export default function Navbar() {
                   <ListItem href="/guides" title="Guides">Step-by-step guides</ListItem>
                   <ListItem href="/docs" title="Documentation">Technical docs</ListItem>
                   <ListItem href="/case-studies" title="Case Studies">Real stories</ListItem>
-                  <ListItem href="/faqs" title="FAQs">Common questions</ListItem>
+                  <ListItem href="/#faqs" title="FAQs">Common questions</ListItem>
                   <ListItem href="/security" title="Security">Best practices</ListItem>
                 </ul>
               </NavigationMenuContent>

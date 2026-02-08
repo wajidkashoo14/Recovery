@@ -5,7 +5,6 @@ import Services from "@/components/Services";
 import WhyUs from "@/components/WhyUs";
 import Steps from "@/components/Steps";
 import Qna from "@/components/Qna";
-import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -15,7 +14,6 @@ export default function Home() {
       <WhyUs />
       <Steps />
       <Qna />
-      <Footer />
     </div>
   );
 }
