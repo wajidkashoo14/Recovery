@@ -11,7 +11,16 @@ import {
   Clock
 } from "lucide-react";
 
-const steps = [
+type ColorType = "blue" | "purple" | "pink" | "green" | "cyan";
+
+const steps: Array<{
+  number: string;
+  icon: any;
+  title: string;
+  description: string;
+  timeframe: string;
+  color: ColorType;
+}> = [
   {
     number: "01",
     icon: MessageSquare,
@@ -121,7 +130,7 @@ const HowItWorks = () => {
               const Icon = step.icon;
               const isLast = index === steps.length - 1;
               
-              const colorClasses = {
+              const colorClasses: Record<ColorType, string> = {
                 blue: "from-blue-500 to-blue-600",
                 purple: "from-purple-500 to-purple-600",
                 pink: "from-pink-500 to-pink-600",
