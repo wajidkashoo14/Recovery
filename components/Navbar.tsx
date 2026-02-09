@@ -27,8 +27,8 @@ const recoveryServices = [
   { label: 'Bitcoin Recovery', href: '/bitcoin-recovery' },
   { label: 'Ethereum Recovery', href: '/ethereum-recovery' },
   { label: 'Litecoin', href: '/litecoin-recovery' },
-  { label: 'MetaMask', href: '/metamask' },
-  { label: 'Ledger', href: '/ledger' },
+  { label: 'Ripple', href: '/ripple-recovery' },
+  { label: 'Dogecoin', href: '/dogecoin-recovery' },
 ]
 
 const otherRecoveryOptions = [
