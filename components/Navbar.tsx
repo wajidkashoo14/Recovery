@@ -1,6 +1,6 @@
 'use client'
 
-import * as React from 'react'
+import {useState, forwardRef} from 'react'
 import Link from 'next/link'
 import { Menu, ChevronDown, ChevronRight } from 'lucide-react'
 
@@ -26,7 +26,7 @@ import { cn } from '@/lib/utils'
 const recoveryServices = [
   { label: 'Bitcoin Recovery', href: '/bitcoin-recovery' },
   { label: 'Ethereum Recovery', href: '/ethereum-recovery' },
-  { label: 'Trust Wallet', href: '/trust-wallet' },
+  { label: 'Litecoin', href: '/litecoin-recovery' },
   { label: 'MetaMask', href: '/metamask' },
   { label: 'Ledger', href: '/ledger' },
 ]
@@ -46,7 +46,7 @@ const otherRecoveryOptions = [
 /* ---------------- COMPONENT ---------------- */
 
 export default function Navbar() {
-  const [openNested, setOpenNested] = React.useState(false)
+  const [openNested, setOpenNested] = useState(false)
 
   return (
     <header className="
@@ -279,7 +279,7 @@ function MobileGroup({ children }: { children: React.ReactNode }) {
   )
 }
 
-const ListItem = React.forwardRef<
+const ListItem = forwardRef<
   React.ElementRef<'a'>,
   React.ComponentPropsWithoutRef<'a'> & { title: string; href: string }
 >(({ title, children, href }, ref) => (
