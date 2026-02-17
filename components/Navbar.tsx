@@ -47,6 +47,12 @@ const otherRecoveryOptions = [
 
 export default function Navbar() {
   const [openNested, setOpenNested] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false) // Add this state
+
+  // Function to close mobile menu
+  const closeMobileMenu = () => {
+    setMobileOpen(false)
+  }
 
   return (
     <header className="
@@ -141,7 +147,7 @@ export default function Navbar() {
         </Button>
 
         {/* ---------------- MOBILE NAV ---------------- */}
-        <Sheet>
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetTrigger asChild>
             <Button
               size="icon"
@@ -161,7 +167,7 @@ export default function Navbar() {
           >
             <nav className="mt-8 flex flex-col gap-4">
 
-              <MobileLink href="/">Home</MobileLink>
+              <MobileLink href="/" onClick={closeMobileMenu}>Home</MobileLink>
 
               {/* Resources */}
               <details className="group">
@@ -170,11 +176,11 @@ export default function Navbar() {
                   <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
                 </summary>
                 <MobileGroup>
-                  <MobileLink href="/guides">Guides</MobileLink>
-                  <MobileLink href="/docs">Documentation</MobileLink>
-                  <MobileLink href="/case-studies">Case Studies</MobileLink>
-                  <MobileLink href="/faqs">FAQs</MobileLink>
-                  <MobileLink href="/security">Security Tips</MobileLink>
+                  <MobileLink href="/guides" onClick={closeMobileMenu}>Guides</MobileLink>
+                  <MobileLink href="/docs" onClick={closeMobileMenu}>Documentation</MobileLink>
+                  <MobileLink href="/case-studies" onClick={closeMobileMenu}>Case Studies</MobileLink>
+                  <MobileLink href="/faqs" onClick={closeMobileMenu}>FAQs</MobileLink>
+                  <MobileLink href="/security" onClick={closeMobileMenu}>Security Tips</MobileLink>
                 </MobileGroup>
               </details>
 
@@ -194,7 +200,7 @@ export default function Navbar() {
                     </summary>
                     <div className="ml-4 mt-2 flex flex-col gap-2 border-l border-white/10 pl-4">
                       {recoveryServices.map(item => (
-                        <MobileLink key={item.label} href={item.href}>
+                        <MobileLink key={item.label} href={item.href} onClick={closeMobileMenu}>
                           {item.label}
                         </MobileLink>
                       ))}
@@ -202,17 +208,20 @@ export default function Navbar() {
                   </details>
 
                   {otherRecoveryOptions.map(item => (
-                    <MobileLink key={item.label} href={item.href}>
+                    <MobileLink key={item.label} href={item.href} onClick={closeMobileMenu}>
                       {item.label}
                     </MobileLink>
                   ))}
                 </MobileGroup>
               </details>
 
-              <MobileLink href="/pricing">Pricing</MobileLink>
-              <MobileLink href="/blog">Blog</MobileLink>
+              <MobileLink href="/pricing" onClick={closeMobileMenu}>Pricing</MobileLink>
+              <MobileLink href="/blog" onClick={closeMobileMenu}>Blog</MobileLink>
 
-              <Button className="mt-4 w-full bg-white text-black hover:bg-zinc-200">
+              <Button 
+                className="mt-4 w-full bg-white text-black hover:bg-zinc-200"
+                onClick={closeMobileMenu}
+              >
                 Recover Your Wallet
               </Button>
 
@@ -263,9 +272,21 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   )
 }
 
-function MobileLink({ href, children }: { href: string; children: React.ReactNode }) {
+function MobileLink({ 
+  href, 
+  children, 
+  onClick 
+}: { 
+  href: string; 
+  children: React.ReactNode;
+  onClick?: () => void;
+}) {
   return (
-    <Link href={href} className="text-sm text-white/80 hover:text-white transition-colors">
+    <Link 
+      href={href} 
+      className="text-sm text-white/80 hover:text-white transition-colors"
+      onClick={onClick}
+    >
       {children}
     </Link>
   )

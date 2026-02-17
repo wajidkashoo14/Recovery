@@ -15,6 +15,40 @@ import {
   MapPin
 } from "lucide-react";
 
+// Recovery types
+const recoveryTypes = [
+  "Bitcoin Recovery",
+  "Ethereum Recovery",
+  "Seed Phrase Recovery",
+  "Hardware Wallet Recovery",
+  "Exchange Account Recovery",
+  "DeFi Recovery",
+  "Scam Recovery",
+  "Lost Password",
+  "Deleted Wallet",
+  "Other",
+];
+
+// Wallet types
+const walletTypes = [
+  "Ledger",
+  "Trezor",
+  "Blockchain.com",
+  "MetaMask",
+  "Trust Wallet",
+  "Coinbase Wallet",
+  "Exodus",
+  "Electrum",
+  "Bitcoin Core",
+  "Multibit",
+  "Jaxx Liberty",
+  "MyEtherWallet",
+  "Binance",
+  "Kraken",
+  "Coinbase Exchange",
+  "Other",
+];
+
 const ContactPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -24,15 +58,19 @@ const ContactPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    confirmEmail: "",
     phone: "",
-    subject: "",
+    country: "",
+    recoveryType: "",
+    walletType: "",
     message: "",
+    agreed: false,
   });
 
   const [errors, setErrors] = useState<{[key: string]: string}>({});
 
   // Update form data
-  const updateFormData = (field: string, value: string) => {
+  const updateFormData = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error for this field
     if (errors[field]) {
@@ -48,24 +86,59 @@ const ContactPage = () => {
   const validateForm = (): boolean => {
     const newErrors: {[key: string]: string} = {};
 
+    // Name validation
     if (!formData.name.trim()) {
       newErrors.name = "Name is required";
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
     }
+
+    // Email validation
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
+      newErrors.email = "Please enter a valid email address";
     }
+
+    // Confirm Email validation
+    if (!formData.confirmEmail.trim()) {
+      newErrors.confirmEmail = "Please confirm your email";
+    } else if (formData.email !== formData.confirmEmail) {
+      newErrors.confirmEmail = "Email addresses do not match";
+    }
+
+    // Phone validation
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required";
+    } else if (!/^[\d\s\-\+\(\)]+$/.test(formData.phone)) {
+      newErrors.phone = "Please enter a valid phone number";
     }
-    if (!formData.subject.trim()) {
-      newErrors.subject = "Subject is required";
+
+    // Country validation
+    if (!formData.country.trim()) {
+      newErrors.country = "Country is required";
     }
+
+    // Recovery Type validation
+    if (!formData.recoveryType) {
+      newErrors.recoveryType = "Please select a recovery type";
+    }
+
+    // Wallet Type validation
+    if (!formData.walletType) {
+      newErrors.walletType = "Please select a wallet type";
+    }
+
+    // Message validation
     if (!formData.message.trim()) {
       newErrors.message = "Message is required";
     } else if (formData.message.trim().length < 20) {
-      newErrors.message = "Please provide more details (minimum 20 characters)";
+      newErrors.message = "Message must be at least 20 characters";
+    }
+
+    // Agreement validation
+    if (!formData.agreed) {
+      newErrors.agreed = "You must agree to the terms and conditions";
     }
 
     setErrors(newErrors);
@@ -77,6 +150,12 @@ const ContactPage = () => {
     e.preventDefault();
 
     if (!validateForm()) {
+      // Scroll to first error
+      const firstError = Object.keys(errors)[0];
+      const element = document.getElementById(firstError);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return;
     }
 
@@ -96,14 +175,18 @@ const ContactPage = () => {
           access_key: "YOUR_WEB3FORMS_ACCESS_KEY_HERE",
           
           // Form data
-          subject: `Contact Form: ${formData.subject}`,
+          subject: `New Recovery Request - ${formData.recoveryType}`,
           from_name: formData.name,
           email: formData.email,
-          phone: formData.phone,
-          message: formData.message,
           
-          // Additional info
-          "Subject": formData.subject,
+          // All form fields
+          "Name": formData.name,
+          "Email": formData.email,
+          "Phone": formData.phone,
+          "Country": formData.country,
+          "Recovery Type": formData.recoveryType,
+          "Wallet Type": formData.walletType,
+          "Message": formData.message,
           
           // Redirect after submission (optional)
           redirect: false,
@@ -117,10 +200,16 @@ const ContactPage = () => {
         setFormData({
           name: "",
           email: "",
+          confirmEmail: "",
           phone: "",
-          subject: "",
+          country: "",
+          recoveryType: "",
+          walletType: "",
           message: "",
+          agreed: false,
         });
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         // Hide success message after 10 seconds
         setTimeout(() => setIsSuccess(false), 10000);
       } else {
@@ -296,33 +385,65 @@ const ContactPage = () => {
                       placeholder="John Doe"
                     />
                     {errors.name && (
-                      <p className="mt-2 text-sm text-red-400">{errors.name}</p>
+                      <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.name}
+                      </p>
                     )}
                   </div>
 
-                  {/* Email & Phone */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
-                        Email Address *
-                      </label>
-                      <input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => updateFormData('email', e.target.value)}
-                        className={`
-                          w-full px-4 py-3 sm:py-4 bg-white/5 border rounded-lg text-white placeholder-white/40 
-                          focus:outline-none focus:border-blue-400 transition-colors
-                          ${errors.email ? 'border-red-400' : 'border-white/10'}
-                        `}
-                        placeholder="john@example.com"
-                      />
-                      {errors.email && (
-                        <p className="mt-2 text-sm text-red-400">{errors.email}</p>
-                      )}
-                    </div>
+                  {/* Email */}
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
+                      Email Address *
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => updateFormData('email', e.target.value)}
+                      className={`
+                        w-full px-4 py-3 sm:py-4 bg-white/5 border rounded-lg text-white placeholder-white/40 
+                        focus:outline-none focus:border-blue-400 transition-colors
+                        ${errors.email ? 'border-red-400' : 'border-white/10'}
+                      `}
+                      placeholder="john@example.com"
+                    />
+                    {errors.email && (
+                      <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.email}
+                      </p>
+                    )}
+                  </div>
 
+                  {/* Confirm Email */}
+                  <div>
+                    <label htmlFor="confirmEmail" className="block text-sm font-medium text-white mb-2">
+                      Confirm Email Address *
+                    </label>
+                    <input
+                      id="confirmEmail"
+                      type="email"
+                      value={formData.confirmEmail}
+                      onChange={(e) => updateFormData('confirmEmail', e.target.value)}
+                      className={`
+                        w-full px-4 py-3 sm:py-4 bg-white/5 border rounded-lg text-white placeholder-white/40 
+                        focus:outline-none focus:border-blue-400 transition-colors
+                        ${errors.confirmEmail ? 'border-red-400' : 'border-white/10'}
+                      `}
+                      placeholder="john@example.com"
+                    />
+                    {errors.confirmEmail && (
+                      <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.confirmEmail}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Phone & Country */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
                       <label htmlFor="phone" className="block text-sm font-medium text-white mb-2">
                         Phone Number *
@@ -340,30 +461,97 @@ const ContactPage = () => {
                         placeholder="+1 (555) 123-4567"
                       />
                       {errors.phone && (
-                        <p className="mt-2 text-sm text-red-400">{errors.phone}</p>
+                        <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+                          <AlertCircle className="w-4 h-4" />
+                          {errors.phone}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label htmlFor="country" className="block text-sm font-medium text-white mb-2">
+                        Country *
+                      </label>
+                      <input
+                        id="country"
+                        type="text"
+                        value={formData.country}
+                        onChange={(e) => updateFormData('country', e.target.value)}
+                        className={`
+                          w-full px-4 py-3 sm:py-4 bg-white/5 border rounded-lg text-white placeholder-white/40 
+                          focus:outline-none focus:border-blue-400 transition-colors
+                          ${errors.country ? 'border-red-400' : 'border-white/10'}
+                        `}
+                        placeholder="United States"
+                      />
+                      {errors.country && (
+                        <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+                          <AlertCircle className="w-4 h-4" />
+                          {errors.country}
+                        </p>
                       )}
                     </div>
                   </div>
 
-                  {/* Subject */}
+                  {/* Type of Recovery */}
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-white mb-2">
-                      Subject *
+                    <label htmlFor="recoveryType" className="block text-sm font-medium text-white mb-2">
+                      Type of Recovery *
                     </label>
-                    <input
-                      id="subject"
-                      type="text"
-                      value={formData.subject}
-                      onChange={(e) => updateFormData('subject', e.target.value)}
+                    <select
+                      id="recoveryType"
+                      value={formData.recoveryType}
+                      onChange={(e) => updateFormData('recoveryType', e.target.value)}
                       className={`
-                        w-full px-4 py-3 sm:py-4 bg-white/5 border rounded-lg text-white placeholder-white/40 
+                        w-full px-4 py-3 sm:py-4 bg-white/5 border rounded-lg text-white 
                         focus:outline-none focus:border-blue-400 transition-colors
-                        ${errors.subject ? 'border-red-400' : 'border-white/10'}
+                        ${errors.recoveryType ? 'border-red-400' : 'border-white/10'}
+                        ${!formData.recoveryType ? 'text-white/40' : 'text-white'}
                       `}
-                      placeholder="Bitcoin Wallet Recovery"
-                    />
-                    {errors.subject && (
-                      <p className="mt-2 text-sm text-red-400">{errors.subject}</p>
+                    >
+                      <option value="" className="bg-zinc-900">Select recovery type...</option>
+                      {recoveryTypes.map((type) => (
+                        <option key={type} value={type} className="bg-zinc-900 text-white">
+                          {type}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.recoveryType && (
+                      <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.recoveryType}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Type of Wallet */}
+                  <div>
+                    <label htmlFor="walletType" className="block text-sm font-medium text-white mb-2">
+                      Type of Wallet *
+                    </label>
+                    <select
+                      id="walletType"
+                      value={formData.walletType}
+                      onChange={(e) => updateFormData('walletType', e.target.value)}
+                      className={`
+                        w-full px-4 py-3 sm:py-4 bg-white/5 border rounded-lg text-white 
+                        focus:outline-none focus:border-blue-400 transition-colors
+                        ${errors.walletType ? 'border-red-400' : 'border-white/10'}
+                        ${!formData.walletType ? 'text-white/40' : 'text-white'}
+                      `}
+                    >
+                      <option value="" className="bg-zinc-900">Select wallet type...</option>
+                      {walletTypes.map((type) => (
+                        <option key={type} value={type} className="bg-zinc-900 text-white">
+                          {type}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.walletType && (
+                      <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.walletType}
+                      </p>
                     )}
                   </div>
 
@@ -386,12 +574,51 @@ const ContactPage = () => {
                     />
                     <div className="flex items-center justify-between mt-2">
                       {errors.message ? (
-                        <p className="text-sm text-red-400">{errors.message}</p>
+                        <p className="text-sm text-red-400 flex items-center gap-1">
+                          <AlertCircle className="w-4 h-4" />
+                          {errors.message}
+                        </p>
                       ) : (
                         <p className="text-sm text-white/40">Minimum 20 characters</p>
                       )}
                       <p className="text-sm text-white/40">{formData.message.length} characters</p>
                     </div>
+                  </div>
+
+                  {/* Agreement Checkbox */}
+                  <div>
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        id="agreed"
+                        type="checkbox"
+                        checked={formData.agreed}
+                        onChange={(e) => updateFormData('agreed', e.target.checked)}
+                        className={`
+                          w-5 h-5 mt-0.5 rounded border-2 bg-white/5 
+                          checked:bg-blue-500 checked:border-blue-500 
+                          focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-black
+                          transition-all cursor-pointer
+                          ${errors.agreed ? 'border-red-400' : 'border-white/20'}
+                        `}
+                      />
+                      <span className="text-sm text-white/70 group-hover:text-white/90 transition-colors">
+                        I agree to the{" "}
+                        <Link href="/terms" className="text-blue-400 hover:text-blue-300 underline">
+                          terms and conditions
+                        </Link>
+                        {" "}and{" "}
+                        <Link href="/privacy-policy" className="text-blue-400 hover:text-blue-300 underline">
+                          privacy policy
+                        </Link>
+                        . I understand that by submitting this form, I consent to be contacted regarding my inquiry. *
+                      </span>
+                    </label>
+                    {errors.agreed && (
+                      <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.agreed}
+                      </p>
+                    )}
                   </div>
 
                   {/* Submit Button */}
@@ -412,17 +639,6 @@ const ContactPage = () => {
                       </>
                     )}
                   </button>
-
-                  <p className="text-xs text-center text-white/40">
-                    By submitting this form, you agree to our{" "}
-                    <Link href="/privacy-policy" className="text-blue-400 hover:text-blue-300">
-                      privacy policy
-                    </Link>
-                    {" "}and{" "}
-                    <Link href="/terms" className="text-blue-400 hover:text-blue-300">
-                      terms of service
-                    </Link>
-                  </p>
                 </form>
               </div>
             </div>
@@ -430,7 +646,7 @@ const ContactPage = () => {
         </div>
       </section>
 
-      {/* Bottom Contact Info (Repeated for visibility) */}
+      {/* Bottom Contact Info */}
       <section className="relative py-12 sm:py-16 bg-zinc-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-white text-center mb-8 sm:mb-12">
